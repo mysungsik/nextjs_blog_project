@@ -1,0 +1,303 @@
+[0. 법칙들 ]=============================================
+
+1. Page 들은, 간단하게, [복잡한 것들, 스타일링 한 것들] 전부 component 에서 떼오도록!
+
+
+[0. TIP 들 ] =============================================
+
+1. Html 에서, css 변수 (--main-font-size : ...) 를 사용했던 것 처럼,
+    "globals.css" 에 "css 변수" 를 넣어서, 여기저기 사용 가능하다.
+
+2. 이미지의 사용 [ next/image **]
+    import Image from "next/image"
+    < Image src={"/src/pageImages/IMG_5584.JPG"} alt="myImage" width={300} height={300}/>
+
+    ** https://nextjs.org/docs/api-reference/next/legacy/image#layout 에 가면 더 자세히
+
+    ** 특히 "layout 속성"이 기가막힌다.
+
+3. Link from "next/link" 를 사용할때,[ 스타일링시, a 태그로 스타일링] 하면, [Link 는 사실 내부적으로 a로 쓰이기 때문에, 스타일링이 된다.]
+
+4. [imagePath 지정하기] Image 를 추가할 때, "iamge 이름" 과 "image 특정경로(slug)" 를, "DB에 저장하고 받아온 후에"
+
+    image = "zxxx.img"
+    slug = "src/post/..."
+
+    imagePath = `/images/posts/${slug}/${image}`
+
+    이런식으로 저장하고 사용하면 깔끔하다
+
+    아니면, 평소처럼, "상대경로로 저장하는것"도 좋다.
+
+5. slug 란 "중요 단어 들을 잘 섞어서 만든 제목" 정도로 해석 가능하다. 예로, "getting-started-with-nextjs" 같이 문장형식을 띈다.
+
+6. id 대신, slug 를 사용해도 좋다. 
+
+
+
+
+=============================================
+
+1. 페이지 구축하기
+    : 전반적으로 페이지를 구축한다.
+
+    1) 시작페이지 (환영 + 중요한 몇개의 블로그 게시물)
+    2) Contact 페이지 - 댓글기능, 컨택기능
+    3) 전체 글 페이지
+    4) 디테일 글 페이지 - 댓글기능
+
+2. Layout 구축하여, header 처럼 전반적인 ui를 짜줌
+
+3. HomePage 작업시작 [ Welcome component, Feacture component] 
+
+//  1) Welcome section
+//  2) Feacture Posts
+
+4. Welcome component
+
+    1) Image from next/image 로 이미지 생성
+    2) 스타일 생성
+        * 이미지 파일은 반드시 public 폴더에 넣어야 한다.
+
+5. Feacture component 
+
+    1) getStaticProps 로 사전 데이터 페칭 하는 것이 좋아보임 [중요한 포스트들만 모은 것들이니]
+    2) post를 화면에 표시하는 방식을 전부 "통일" 하기 위하여," post-card(item)" 과 "post-grid(list)" 를 만들어서, 화면에 표시하는 것이 좋겠다.
+
+
+    3) "기본 틀 잡기 with dummyData"
+
+    ==== <HomePage>===================================================================
+
+            import Welcome from "../components/homepage-components/welcome";
+            import FeacturePosts from "../components/homepage-components/feature-post";
+
+            function HomePage(props) {
+-               const { dummyData } = props;
+                return (
+                    <div>
+                    <div>
+                        <Welcome />
+-                       <FeacturePosts posts={dummyData} />
+                    </div>
+                    </div>
+                );
+                }
+
+-           export async function getStaticProps() {
+                const dummyData = [{ title: "ms" }, { title: "js" }];
+                return {
+-                   props: { dummyData },
+                };
+            }
+
+            export default HomePage;
+
+    ==== < FeacturePosts > ===================================================================
+
+            import styles from "./feature-post.module.css";
+            import PostGrid from "../posts/post-grid";
+            import { Fragment } from "react";
+
+            function FeacturePosts(props) {
+-               const { posts } = props;
+                return (
+                    <Fragment>
+-                       <PostGrid posts={posts} />
+                    </Fragment>
+                );
+            }
+            export default FeacturePosts;
+
+    ==== <Post Grid>===================================================================
+
+            import styles from "./post-grid.module.css";
+            import PostItem from "../posts/post-item";
+            
+            function PostGrid(props) {
+-               const { posts } = props;
+                return (
+                    <ul>
+-                   {posts.map((post) => (
+                        <li key={post.id}>
+-                          <PostItem posts={post} />
+                        </li>
+-                   ))}
+                    </ul>
+                );
+                }
+            
+            export default PostGrid;
+        
+    ==== <Post Item> ===================================================================
+
+            import Link from "next/link";
+            import Image from "next/image";
+            import styles from "./post-item.module.css";
+            
+            function PostItem(props) {
+-             const { image, title ,id} = props.posts;
+
+              return (
+-               <Link href={"/posts/" + id}>
+                  <div>
+-                   <Image src={image} alt={"image"} width={300} height={300} />
+                  </div>
+                  <div>
+-                   <h2> {title} </h2>
+                    <p> description </p>
+                  </div>
+-               </Link>
+              );
+            }
+            export default PostItem;
+
+6. Feature component 데이터 정리 및 마무리
+
+    <Hompage>
+        export async function getStaticProps() {
+            const dummyData = [
+            {
+                title: "ms",
+                    ...
+            {
+                title: "ks",
+                image: "/src/pageImages/IMG_5584.JPG",
+                id: "e4",
+                date: "2021-03-12",
+                description: "this is des",
+            },
+            ];
+            return {
+            props: { dummyData },
+            };
+        }
+
+    < Itmes >   
+        : Image의 layout 속성을 사용해 보았다.
+        : 기타 다른 데이터도 뽑아서 더미를 넣어놓았다
+
+    ==========================================================================================
+        function PostItem(props) {
+            const { image, title, id, description, date } = props.posts;
+        
+            const reformDate = new Date(date).toLocaleString("ko-KR");
+        
+            return (
+            <Link href={"/posts/" + id}>
+                <div>
+                <div className={styles.image}>
+                    <Image
+-                   src={image} alt={"image"} width={300} height={200} layout="responsive"/>
+                </div>
+                <div className={styles.content}>
+                    <h3> {title} </h3>
+                    <time> {reformDate}</time>
+                    <p> {description} </p>
+                </div>
+                </div>
+            </Link>
+            );
+        }
+        export default PostItem;
+
+7. Allpost Page 더미 작업시작 ( with post-grid 재사용 , dummyData 사용, 껍데기만 완료)
+
+    <Allpost component>
+
+            import styles from "./all-posts.module.css";
+            import { Fragment } from "react";
+            import PostGrid from "../../components/posts/post-grid";
+
+            function AllPosts(props) {
+            const { posts } = props;
+
+                return (
+                    <Fragment>
+                        <h1> All posts</h1>
+                        <PostGrid posts={posts} />
+                    </Fragment>
+                );
+            }
+
+            export default AllPosts;
+
+    <Allpost Page>
+
+            import AllPosts from "../../components/posts/all-posts";
+
+            const dummyData = [
+            {
+                title: "ms",
+                    ...
+
+                image: "/src/pageImages/IMG_5584.JPG",
+                id: "e4",
+                date: "2021-03-12",
+                description: "this is des",
+            },
+            ];
+
+            function AllPostsPage() {
+                return (
+                    <div>
+                        <div>
+-                           <AllPosts posts={dummyData} />
+                        </div>
+                    </div>
+                );
+            }
+            export default AllPostsPage;
+
+
+
+8. Detail Page 더미 작업시작{ "[postid].js" 동적 페이지} + Markdown + dummyData
+
+        "post component 폴더" 에, "post-detail 폴더를 만들고", 
+        그 안에, "post-header.js" 와 "post-content.js" 를 만들어 작업 시작
+
+        ==> "post-header 가 포함된 post-content" 를, "Page 에 넣을 예정"
+
+
+    <Markdown 이란?>
+        : "HTML" 및 "JSX" 코드로 변경시킬 수 있는 "TEXT 기반 컨텐츠"
+-           StackOverFlow 사이트에서, 글을 작성할 때를 기억하자
+
+    <Markdown 의 장점>
+        1. 간결하다.
+        2. 별도의 도구없이 작성가능하다.
+        3. 다양한 형태로 변환이 가능하다.
+        4. 텍스트(Text)로 저장되기 때문에 용량이 적어 보관이 용이하다.
+        5. 텍스트파일이기 때문에 버전관리시스템을 이용하여 변경이력을 관리할 수 있다.
+        6. 지원하는 프로그램과 플랫폼이 다양하다.
+
+    <왜 블로그를 만들때, Markdown 을 사용하는가?>
+        : 앞서 말한 장점들 덕분에, blog post에서, content 를 작성할때, 간편하고, 깔끔한 "텍스트"로, 작성 후
+            JSX 코드로 변환시켜, 렌더링을 할 수 있기 때문
+
+        : 만약, 블로그 글을 작성하는데, "HTML 코드"로 전부 글을 작성한다면,
+            한줄 한줄마다, p 태그로 묶어주랴, h1 태그로 묶어주랴, 띄어쓸때, nbsp 쓰고, br 쓰고, /n 쓰고 아주 가독성이 좋지 못할 것이다.
+            
+
+    <Markdown 사용법>
+        :https://gist.github.com/ihoneymon/652be052a0727ad59601
+
+-   <Markdown 을 JSX 코드로 변환시켜, 렌더링되게 하기>
+
+        1. Content 에 "간편한 Mark-down 언어" 로, 작성 한다.
+        2. "react-markdown" 패키지를 install 한 후,     //  import ReactMarkdown from "react-markdown"  // 으로 import 한다
+            https://www.npmjs.com/package/react-markdown
+
+        3. ReactMarkdown 태그로 감싼 후, content 를 렌더링한다.
+
+            <ReactMarkdown> {dummyData.content} </ReactMarkdown>
+
+        4. 짜잔- markdown 언어가 JSX 로 바뀌어, 렌더링 된다.
+
+
+        
+            
+
+            
+
+
