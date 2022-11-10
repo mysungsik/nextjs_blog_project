@@ -6,7 +6,7 @@ function PostGrid(props) {
   return (
     <ul className={styles.grid}>
       {posts.map((post) => (
-        <li key={post.id}>
+        <li key={post.postid}>
           <PostItem posts={post} />
         </li>
       ))}

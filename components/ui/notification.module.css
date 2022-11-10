@@ -1,0 +1,17 @@
+.notification ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  background-color: antiquewhite;
+  padding: 2rem;
+}
+
+.notification .error {
+  background-color: rgb(153, 51, 51);
+}
+.notification .success {
+  background-color: rgba(140, 207, 135, 0.792);
+}
+.notification .pending {
+  background-color: rgb(192, 162, 110);
+}

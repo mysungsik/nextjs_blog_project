@@ -6,7 +6,7 @@ function Welcome() {
     <section className={styles.welcome}>
       <div className={styles.image}>
         <Image
-          src={"/src/pageImages/IMG_5584.JPG"}
+          src={"/src/posts/getting-start-with-nextjs/IMG_5584.JPG"}
           alt="myImage"
           width={300}
           height={300}

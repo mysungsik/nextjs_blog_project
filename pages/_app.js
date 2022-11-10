@@ -1,11 +1,14 @@
 import "../styles/globals.css";
 import Layout from "../components/ui/layout";
+import { NotificationContextProvider } from "../store/contact-context";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <NotificationContextProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </NotificationContextProvider>
   );
 }
 

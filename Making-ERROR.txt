@@ -1,0 +1,70 @@
+1. fetch 오류
+
+    <오류코드>
+
+        Module parse failed: The top-level-await experiment is not enabled (set experiments.topLevelAwait: true to enabled it)
+        File was processed with these loaders:
+        ...
+
+
+    <원인>
+
+        mongodb 연결 오류이다.
+
+    <해결>
+
+        npm mongodb 에서 "하란대로! 하자"
+        "어줍잖게, async await 쓰면서" 헷갈리게 하지 말고 "하란대로 해라"
+
+    <코드> [api-util.js]
+
+                import { MongoClient } from "mongodb";
+
+                export function ConnectMongodb() {
+                    const client = new MongoClient(
+                        "mongodb+srv://audtlr:nxhYrEZyYpajzBBY@cluster0.mzdaqy1.mongodb.net/?retryWrites=true&w=majority"
+                    );
+                        return client;
+                }
+
+                export async function insertUserInfo(client, dbName, collection, data) {
+                    return client.db(dbName).collection(collection).insertOne(data);
+                }
+                ...
+
+        [사용]
+
+                import { ConnectMongodb, insertUserInfo } from "../../helper/db-util";
+
+                    # const client = ConnectMongodb(); await 뺄거면 밖에다가
+
+                async function userContact(req, res) {
+                    const client = await ConnectMongodb();
+
+                    if (req.method === "POST") {
+                        const { email, name, content } = req.body;
+
+                        const insertData = {
+                            email,
+                            name,
+                            content,
+                            };
+
+                        const insertResult = await insertUserInfo(
+                            client,
+                            "BlogContact",
+                            "userInfo",
+                            insertData
+                            );
+
+        [사용2] - try catch 오류 코드 쓸거면 이게 더 낫겠다.
+
+        
+                async function userContact(req, res) {
+                    let client;
+                    try {
+                    client = await ConnectMongodb();
+                    } catch (error) {
+                    res.status(500).json({ message: "connection fail" });
+                    }
+

@@ -3,16 +3,21 @@ import Link from "next/link";
 import styles from "./post-item.module.css";
 
 function PostItem(props) {
-  const { image, title, id, description, date } = props.posts;
+  const { image, title, postid, description, date } = props.posts;
 
   const reformDate = new Date(date).toLocaleString("ko-KR");
 
   return (
-    <Link href={"/posts/" + id}>
+    <Link href={"/posts/" + postid}>
       <div>
         <div className={styles.image}>
           <Image
-            src={image} alt={"image"} width={300} height={200} layout="responsive"/>
+            src={`/src/posts/${postid}/${image}`}
+            alt={"image"}
+            width={300}
+            height={200}
+            layout="responsive"
+          />
         </div>
         <div className={styles.content}>
           <h3> {title} </h3>

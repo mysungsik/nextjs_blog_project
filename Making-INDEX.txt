@@ -1,5 +1,7 @@
 [0. 법칙들 ]=============================================
 
+0. [블로그를 운영한다?] => [데이터베이스에 연결할 필요가 없다] => [내 로컬 컴퓨터에 파일 시스템을 사용하면 되지!] => [MarkDown 언어가 유용해짐]
+
 1. Page 들은, 간단하게, [복잡한 것들, 스타일링 한 것들] 전부 component 에서 떼오도록!
 
 
@@ -10,7 +12,7 @@
 
 2. 이미지의 사용 [ next/image **]
     import Image from "next/image"
-    < Image src={"/src/pageImages/IMG_5584.JPG"} alt="myImage" width={300} height={300}/>
+    < Image src={"/src/posts/IMG_5584.JPG"} alt="myImage" width={300} height={300}/>
 
     ** https://nextjs.org/docs/api-reference/next/legacy/image#layout 에 가면 더 자세히
 
@@ -33,10 +35,36 @@
 
 6. id 대신, slug 를 사용해도 좋다. 
 
+7. MarkDown 의 사용
+
+    /MarkDown.txt 참조
+    https://www.npmjs.com/package/react-markdown
+
+8. gray matter 의 사용 : MARKDOWN 에서 META-DATA 와 CONTENT 를 분리시키는 패키지
+
+    https://www.npmjs.com/package/gray-matter
+
+9. 무언가를 변수로 뽑았을때, 변수 위에 마우스를 갖다 대면, 어떤 형태인지 알려준다.
+
+10. 정렬하기 2 
+    const sortedPosts =  allPosts.sort((postA,postB)=>(postA.date>postB.date ? -1 : 1)) 
+
+11. .replace 사용법
+
+const postName = filename.replace(/\.md$/, "");         
+// 확장자명 없애기   / / => 시작, 끝,    \ => 여기부터   .md => 이것을     $ => 뒤로부터
+
+
+12. import 할때 이름 바꾸기 "as"로
+    import { XXX as MScustom} from "react"
+
+    ==> MScustom 으로 메서드이름이 변경됌
+
+-   ************* 13. 컴포넌트 안에서, "컴포넌트 함수 안"에 "만든 새로운 함수"(정말 함수의 용도인) 에서는, fetch 사용할때, async await 를 사용해도 된다!!!!
 
 
 
-=============================================
+[0. 코딩 시작 ]=============================================
 
 1. 페이지 구축하기
     : 전반적으로 페이지를 구축한다.
@@ -162,7 +190,7 @@
                     ...
             {
                 title: "ks",
-                image: "/src/pageImages/IMG_5584.JPG",
+                image: "/src/posts/IMG_5584.JPG",
                 id: "e4",
                 date: "2021-03-12",
                 description: "this is des",
@@ -231,7 +259,7 @@
                 title: "ms",
                     ...
 
-                image: "/src/pageImages/IMG_5584.JPG",
+                image: "/src/posts/IMG_5584.JPG",
                 id: "e4",
                 date: "2021-03-12",
                 description: "this is des",
@@ -251,7 +279,7 @@
 
 
 
-8. Detail Page 더미 작업시작{ "[postid].js" 동적 페이지} + Markdown + dummyData
+8. Detail Page 더미 작업시작 With Markdown{ "[postid].js" 동적 페이지} + Markdown + dummyData
 
         "post component 폴더" 에, "post-detail 폴더를 만들고", 
         그 안에, "post-header.js" 와 "post-content.js" 를 만들어 작업 시작
@@ -294,10 +322,712 @@
 
         4. 짜잔- markdown 언어가 JSX 로 바뀌어, 렌더링 된다.
 
+    < [postid] Page >
+-       : "MarkDown 언어를 사용하여, content 에 코드를 넣어보았다"
+
+            import PostContent from "../../components/posts/post-detail/post-content";
+
+            const dummyData = {
+                title: "js",
+                image: "/src/posts/IMG_5584.JPG",
+                id: "e2",
+                date: "2020-11-08",
+                description: "this is des",
+-               content: "# title",
+            };
+            
+            function PostDetailPage() {
+            return (
+                <div>
+                    <PostContent posts={dummyData} />
+                </div>
+            );
+            }
+            
+            export default PostDetailPage;
+
+    < post Content Component >
+-       : MarkDown 언어로 온, 코드를, JSX 로 해석해서, 사용하게 만들어주는, ReactMarkdown 패키지를 사용했다.
+
+            import PostHeader from "./post-header";
+-           import ReactMarkdown from "react-markdown";
+
+            function PostContent(props) {
+                const { posts } = props;
+                return (
+                    <article>
+                        <PostHeader posts={posts} />
+-                       <ReactMarkdown> {posts.content} </ReactMarkdown>
+                    </article>
+                );
+            }
+
+            export default PostContent;
+
+    < post Header Component >
+
+            import Image from "next/image";
+
+            function PostHeader(props) {
+            const { title, image } = props.posts;
+                return (
+                    <header>
+                        <h1> {title} </h1>
+                        <Image src={image} alt="post" width={300} height={300} />
+                    </header>
+                );
+            }
+
+            export default PostHeader;
+
+9. 모든 페이지의 기본 틀 잡기 완료. [이제 실제 데이터를 저장하고, 불러오는 작업 시작]
+
+10. MarkDown 파일 생성 & 작성," MarkDown에 이미지 소스를 넣기 위해", [이미지가 들어있는 폴더 이름]을 [MarkDown 파일이름과 동일하게 설정]
+
+-   < data - posts - "getting-start-with-nextjs.md" >
+
+            ---
+            title: "Getting start with Next JS"
+            date: "2022-10-15"
+            author: "ms"
+            image: \src\posts\getting-start-with-nextjs\IMG_5584.JPG
+            description: description
+            isFeatured: true
+            ---
+
+            # This is a title
+
+            This is Some regular TEXT [link](https://google.com)
+    
+-   < src/ posts / getting-start-with-nextjs / IMG_5584.JPG>
+        로, 이미지 들어있는 폴더이름 변경
+
+-   ***  markdown 의 파일이름과 동일한 폴더이름이 있어야, markdown 이 이미지를 인식 할 수 잇음. "아직 이해 안감"
+
+
+
+11. 이후, fs를 사용하는 helper 함수를 아웃소싱하여, [AllPosts 페이지와, homepage 의 FeatruePost 채워넣기]
+
+    <프로세스>
+            1) "fs" 에 접근, "readdirSync" 를 통해, "data/posts 안에 있는 모든 파일의 이름을 확인"
+
+            2) "fs"에 접근, "readFileSync" 를 통해, 개별 파일의 컨텐츠를 가져와
+                파일이름, 파일내용, 파일 metadata 를  "gray-matter 패키지" 를 통해, 분리, 사용 하는 "함수를 생성"
+
+            3) 앞서 "readdirSync" 를 통해 얻은 모든 파일 이름을 가지고, "for문을 돌려, readFileSync 함수에 넣어", "모든 파일을 읽는 함수를 생성"
+
+            4) isFeatured 를 따로 뽑아내는 함수를 생성
+
+    < 코드 >
+
+-       ** DB를 사용하지 않을것이기 때문에, filename 이 곧, postid 가 될것이다.
+
+    ==== <helper - post-uitl.js> ==============================================================================
+
+            import fs from "fs";
+            import path from "path";
+            import matter from "gray-matter";
+
+            const postsDirPath = path.join(process.cwd(), "data", "posts");
+
+-           export function getSinglePost(filename) {
+                const filePath = path.join(postsDirPath, filename);     // 단일 파일을 가져오기 위한 fs
+                const singlePost = fs.readFileSync(filePath, "utf-8");  // 모든 유니코드 문자 지원을 위한 utf-8 인코딩
+                const { data, content } = matter(singlePost);           // matter 로 나온 객체를  각 변수로 나누어 만들어주고
+
+                const postName = filename.replace(/\.md$/, "");         // 확장자명 없애기   / / => 시작, 끝,    \ => 여기부터   .md => 이것을     $ => 뒤로부터
+
+                const postData = {
+                    postid: postName,
+                    ...data,
+                    content: content,
+                };
+                return postData;
+            }
+
+-           export function getAllPosts() {
+                const allFiles = fs.readdirSync(postsDirPath);          // 전체 파일 갯수를 위한 [폴더 안의 모든 파일 뒤지기]
+
+                const allPosts = allFiles.map((filename) => getSinglePost(filename));       // map을 통해, "파일이름의 배열을 넣어" "데이터 객체로된 배열을 만듬"
+
+                const sortedPosts =  allPosts.sort((postA,postB)=>(postA.date>postB.date ? -1 : 1))     // 정렬
+
+                return sortedPosts;
+            }
+
+-           export function getFeaturedPost() {                         
+                const feadturedPosts = getAllPosts().filter((post) => post.isFeatured);     // Freatured post 들 뽑아내기
+                return feadturedPosts;
+            }
+        
+    ============================================================================================================================================================
+
+    ======    < pages- posts - index.js> ========================================================================
+
+            import AllPosts from "../../components/posts/all-posts";
+-           import { getAllPosts } from "../../helper/post-util";
+
+            function AllPostsPage(props) {
+
+                const {posts} = props
+                return (
+                    <div>
+                        <div>
+                            <AllPosts posts={posts} />
+                        </div>
+                    </div>
+                );
+            }
+
+            export function getStaticProps() {
+                
+-               const allPosts = getAllPosts();
+
+                return {
+                    props: {
+                        posts: allPosts,
+                    },
+                };
+            }
+
+            export default AllPostsPage;
+
+    ======    <pages - index> ========================================================================
+
+            import AllPosts from "../../components/posts/all-posts";
+-           import { getAllPosts } from "../../helper/post-util";
+
+            function AllPostsPage(props) {
+                const { posts } = props;
+                return (
+                    <div>
+                    <div>
+                        <AllPosts posts={posts} />
+                    </div>
+                    </div>
+                );
+            }
+        
+            export async function getStaticProps() {
+-               const featuredPosts = getFeaturedPost();
+            
+                return {
+                    props: {
+-                       posts: featuredPosts,
+                    },
+                };
+            }
+            
+            export default HomePage;
+
+    < 주의할점 >
+
+        1. "fs" 는, "서버측 코드에서만 접근 가능"하다
+            그렇다는 것은 "fs" 로 만든 파일을 불러오기 위해서는,
+            "getStaticProps" 나, "getServerSideProps" 혹은 "API 를 만든후, 요청후에, fetch" 로 불러와야 한다는 말이다.
+
+        2. 굳이 필요없는 API 를 만들 필요는 없으니 "getStaticProps" 로 작업하도록 한다.
+        
+
+12. 동적 경로(Detail Page)에, 동적 값 집어넣기
+
+    : "HomePage의 FeaturePosts" 와는 달리, "Detail Page" 는 [동적 경로이다.]
+    
+        => "singlePost 를 불러오는 helper 함수를 동적으로 만들어보자"
+
+    
+        <프로세스>
+            Allpost ==> 글 클릭 ==> posts/postid(filename) 페이지로 이동함
+            ==> context.params 로 postid를 페이지에서 뽑아, 그에 맞는 singlePost 만 가져올 것
+    
+        <문제점>
+            기존의 helper 함수는, 
+
+    -           export function getSinglePost(filename) {
+    -               const filePath = path.join(postsDirPath, filename);
+                    const singlePost = fs.readFileSync(filePath, "utf-8");
+                    const { data, content } = matter(singlePost);
+
+            "filename" 으로 "확장자가 없는 파일명을 넣으면(.ms)", fs에 접근해 파일을 읽은 수 없으므로,
+
+
+        [수정] <helper -  post-util.js  >
+
+-               export function getSinglePost(fileID) {
+                    const postName = fileID.replace(/\.md$/, "");
+                    const filePath = path.join(postsDirPath, `${postName}.md`);
+                    const singlePost = fs.readFileSync(filePath, "utf-8"); 
+                    const { data, content } = matter(singlePost);
+                
+                    const postData = {
+                    postid: postName,
+                    ...data,
+                    content: content,
+                    };
+                    return postData;
+                }
+
+            ==> fileID 에, ".md 가 있던 없던", "filePath 로는 .md를 붙여, 확장자가 있께 만들고"
+            ==> fileID 에, ".md 가 있던 없던"," postid로 가는 이름에는 .md 를 떼어내고 보낸다."
+                
+            
+    <코드>
+            
+        <helper -  post-util.js  >
+-           :모든 파일을 다 가져와서, postid 를 뽑는 무식한 짓을 하지 말고, 새로운 helper 함수를 통해, filename(postid) 만 뽑는 함수를 만들자.
+            
+-           export function getAllPostId() {
+                 return fs.readdirSync(postsDirPath).map((filename) => filename.replace(/\.md$/, ""));
+            }
+
+        < [postid].js >
+-           : context.params.postid 로 동적 값을 뽑아서, 적절한 single 포스트를 가져오고
+            : Paths 는 따로 만들어놓은 함수를 사용해, 넣어준다.
+
+
+            import PostContent from "../../components/posts/post-detail/post-content";
+            import { getAllPostId, getSinglePost } from "../../helper/post-util";
+            
+            function PostDetailPage(props) {
+            const { postData } = props;
+            return (
+                <div>
+-                   <PostContent posts={postData} />
+                </div>
+            );
+            }
+        
+            export async function getStaticProps(context) {
+-               const { postid } = context.params;
+                
+-               const fileData = getSinglePost(postid);
+                
+                return {
+                    props: {
+-                       postData: fileData,
+                    },
+            -       revalidate: 500,    // 파일 내부의 값 하나 고치고자, 전체를 리빌딩, 재배포 할 수 없으므로, 편하게 revalidate 속성을 넣어줌
+                };
+            }
+            
+            export async function getStaticPaths() {
+            
+                const allFileData = getAllPostId();
+                
+                const paramsData = allFileData.map((filedata) => ({
+                    params: { postid: filedata },
+                }));
+                
+                return {
+                    paths: paramsData,
+-                   fallback: false, 
+                };
+            }
+
+            export default PostDetailPage;
+
+-       ==> fallback 정하기
+                :  모든 게시물을 전부, 사전 렌더링 시켰으므로, "false" 도 적합
+                    "블로그 글이 수천개씩 되면" "blocking" 나, "몇개만 사전 렌더링 하고 true"로 하는 것도 좋겠다. 모든 글을 다 누르지는 않을테니
+            
+13. Next Image 컴포넌트를 통해, 마크다운으로부터, 이미지 렌더링하기 + 이미지 오버라이드
+    : 갑분 마크다운. "마크다운에 코드와 이미지를 넣고싶다."
+    : 넣을 수는 있다. "문제는 렌더링을 할 시에 문제가 발생한다."
+
+    <프로세스>
+        .md(markdown) 로 파일작성 => gray-matter 로 객체화 => 
+            객체 데이터를 PostContent 로 넣고 => ReactMarkdown 으로 해석시켜서 화면에 표시
+
+        * md 파일이름과 img 파일 폴더 이름이 동일하게 만들어서, OK 화면에 표시까지 딱 되었다!
+
+    <문제점>
+        ** 이미지가 Next.js 에 적합한 이미지가 아닌, "원본 이미지" 이다.
+            => "이미지 크기 바꾸기도 힘들고, lazy rendering 될리가 없고, 원본파일 크기 그대로 가져온다."
+
+    <해결>
+        ReactMarkdown 에는, "components" 라는 메서드가 존재한다.
+           이 "components" 에 "내가 설정한 custom Components 설정"을 만들어, 
+            실제 들어가는 파일의 설정을 nextjs의 Image로 "오버라이드(덮어씌운다)"시킨다.
+
+
+    <코드> 
+    <component - post-detail - post-content>
+
+        import PostHeader from "./post-header";
+        import ReactMarkdown from "react-markdown";
+        import styles from "./post-content.module.css";
+        import Image from "next/image";
+
+        function PostContent(props) {
+        const { posts } = props;
+
+-       const myComponents = {
+-           img(image) {
+-             return (<Image src={`/src/posts/${posts.postid}/${image.src}`} alt={image.alt} width={300} height={300} />);
+            },
+          };
+
+        return (
+            <article className={styles.content}>
+                <PostHeader posts={posts} />
+-               <ReactMarkdown components={myComponents}>{posts.content}</ReactMarkdown>
+            </article>
+        );
+        }
+
+        export default PostContent;
+
+    <해석>
+        REACT-MARKDOWN DOCS : https://github.com/remarkjs/react-markdown#appendix-b-components
+
+        myComponents 라는 "이미지를 오버라이드 할 components" 를 만든 후에,
+        "react-markdown" 에서 제시하는 설정들을 활용해, 설정을 만든다.
+
+            img(image){
+                return <Image src={`/src/posts/${posts.postid}/${image.src}`} alt={image.alt} width={300} height={300} />
+            }
+            
+        "img" 는, 마크다운 이미지를 지칭 (DOCS 어렴풋 나와있음)
+        "image" 파라미터는 임의로 적어도 되고
+        "image.src" 는 내가 markdown 파일에 적은 곳의 "src"
+        "image.alt" 는 내가 markdown 파일에 적은 곳의 "alt"
+            
+            *참조 : markdown 의 이미지 표시 기법
+            
+                ![ alt ]( src )
+                ![Create routes via your file + folder structure](IMG_5584.JPG)
+
+        ==> 동적인 경로로, 마크다운파일에, 파일이름만 적으면, 자동으로 src를 맞춰주게 코드를 짠 것이다.
+    
+
+14. "마크다운 코드 사용" 및 "코드 오버라이드" WITH "react-syntax-highlighter" 패키지
+
+        import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+        import { dark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+
+        function PostContent(props) {
+            const { posts } = props;
+
+            const myComponents = {
+                code(code) {
+                    return ( <SyntaxHighlighter language={code.language} style={dark} children={code.children} /> );
+                },
+            };
+
+            return (
+                <article className={styles.content}>
+                    <PostHeader posts={posts} />
+-                   <ReactMarkdown components={myComponents}>{posts.content}</ReactMarkdown>
+                </article>
+        );
+
+            **  "code.children" 은     
+                    ```.js               
+                    ```
+                사이에 있는 코드들을 가리키며
+
+                "code.language" 는, ".js" 니까 "javascript" 로 표기될것이다.
+
+15. API 사용하여 Contact 페이지 작업하기
+
+    : contact 페이지 만들고, api 만들고, mongodb 연결까지
+
+    
+15-1. "submit 버튼 눌렀을때, 값이 다 지워지려면,"
+        "useState" 를 사용하여, "input 안에 value 값을 설정 한 다음"에, "버튼 눌렀을때, value 가 바뀌도록 해야한다."
+
+16. Context 를 사용하여 , [데이터를 보낼때, footer 에 나오는 UI 를 만들어보자]
+
+    1. notification Component 만들기
+
+    ====================== <ui- notification.js>========================================================================================
+
+            import styles from "./notification.module.css";
+            import { useContext } from "react";
+            import NotificationContext from "../../store/contact-context";
+            
+            function Notification() {
+                const NotificationCtx = useContext(NotificationContext);
+                const activeNotification = NotificationCtx.notificationData;
+                let status = activeNotification.status;
+                let statusStyle = "";
+                
+                function hideNoti() {
+                    NotificationCtx.hideNotification();
+                }
+                
+                if (status === "pending") {
+                    statusStyle = styles.pending;
+                }
+                if (status === "success") {
+                    statusStyle = styles.success;
+                }
+                if (status === "error") {
+                    statusStyle = styles.error;
+                }
+                
+                return (
+                    <div className={styles.notification} onClick={hideNoti}>
+                        <ul className={statusStyle}>
+                            <li>{activeNotification.title}</li>
+                            <li>{activeNotification.message}</li>
+                            <li>{activeNotification.status}</li>
+                        </ul>
+                    </div>
+                );
+                }
+            
+            export default Notification;
+    
+
+
+    2. createContext 만들기 [store 폴더]
+
+        ** "createContext" 는 "초기값만 만들고 빠지는거야!"
+-           초기값을 제외한 모든 행동은 "ContextProvider" 함수에서 처리할거야!
+
+        <프로세스>
+            context 안에, notificationData 라는 껍데기를 만들고,
+            showNotification 과 hideNotification 함수로, notificationData 를 조절하게 만들며,
+            "바깥에서, notificationData 가 존재한다면 => 어떤일이 벌어진다". 로 로직을 짜면 깔끔!
+            "모든곳에서 context 를 제어할 수 있으니까!"
+
+            "이번 프로젝트에서는"
+            "Contact Form"을 만지는 파일에서,
+            api로부터, 값을 전달할때, [전달중], [완료 혹은 실패] 를 판단하여 
+                적절한 값을, context 에 값을 집어넣어 사용하도록 할 것이다.
+
+
+        <필수 로직>
+-           데이터가 있을때만, 활성화시키게 하기 [삼항식, &&식 이용하여 가능]
+
+
+        <코드> 
+        ===========  < createContext > : "store/ contact-context"  ===========================================================================
+
+            import { createContext, useState } from "react";
+
+            const NotificationContext = createContext({
+                notificationData: {}, //title,message,status
+                showNotification: function () {},
+                hideNotification: function () {},
+            });
+
+            export function NotificationContextProvider(props) {
+                const [notificationData, setNotificationData] = useState();
+
+                function showNotificationHandler(notificationData) {
+                    setNotificationData(notificationData);
+                }
+
+                function hideNotificationHandler() {
+                    setNotificationData(null);
+                }
+
+                const context = {
+                    notificationData: notificationData,
+                    showNotification: showNotificationHandler,
+                    hideNotification: hideNotificationHandler,
+                };
+                return (
+                    <NotificationContext.Provider value={context}>
+                        {props.children}
+                    </NotificationContext.Provider>
+                );
+                }
+
+            export default NotificationContext;
+
+
+    3. context 사용하기 [contact form 에서 API 와 통신할때] , [ Notification component 에서, notification 종료할때] 
+
+
+        import { useRef, useContext } from "react";
+-       import NotificationContext from "../../store/contact-context";      // context 사용하기위한 import
+                ...
+
+-       import Notification from "../ui/notification";                      // notification component 불러오기
+
+        function ContactForm() {
+        const emailRef = useRef();
+        const nameRef = useRef();
+        const contentRef = useRef();
+
+-       const NotificationCtx = useContext(NotificationContext);            // context 사용
+-       const activeNotification = NotificationCtx.notificationData;        // context 안에 있는 Data 에 접근
+
+        function submitHandler(event) {
+            event.preventDefault();
+
+            const insertData = {
+                email: emailRef.current.value,
+                name: nameRef.current.value,
+                content: contentRef.current.value,
+            };
+
+-           NotificationCtx.showNotification({                              // Context Data 에 접근하여, 값 집어넣기
+                title: "audtlr",
+                message: "pending",
+                status: "pending",
+            });
+
+            fetch("/api/contact-api", {
+                method: "POST",
+                body: JSON.stringify(insertData),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+-           .then((res) => {                                                // 만약, res.ok 이면, 평소대로
+                if (res.ok) {
+-                   return res.json();                                      // 이 if문에서는, code 가 여기까지만 실행되어야 하니, return
+                }
+-               return res.json().then((data) => {                          // res.ok 가 아니라면, "새 프로미스 체인"을 만들어서, "에러발생시킴"
+                    throw new Error(error || "you got a error");
+                });
+            })
+-           .then(                                                          // 정상적인 if문을 통과했다면, "새 프로미스체인이 아니고", 지금 이 프로미스체인이 실행
+                (data) => (
+                console.log(data),
+                NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "success",
+                    status: "success",
+                })
+                )
+            )
+-           .catch((error) => {                                             // 에러가 발생되었다면, catch
+                console.log(error);
+                NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "success",
+                    status: "error",
+                    });
+            });
+        }
+
+        return (
+            <Fragment>
+            <header className={styles.header}>
+                <h1> CONTACT ME !</h1>
+            </header>
+            <main className={styles.main}>
+                <form>
+                <div>
+                    <label htmlFor="email"> your email</label>
+                    <input
+                    type={"email"}
+                    id={"email"}
+                    
+                    ...
+
+            </main>
+-           {activeNotification && <Notification />}                        // 만약, context안의 Data가 "있다면", Notification component를 렌더
+            </Fragment>
+        );
+        }
+
+        export default ContactForm;
+
+
+16-1. "만약, 전체 여기저기 페이지가 아니라, 한 페이지에서만 사용할 것이라, Context 를 사용하지 않고, 일반적으로 구현한다면?" 
+
+    ==> useState 를 사용하여, 똑같이 값이 있다면, 보이게 하게 만들고,
+        props 로 값을 전달하면 되겠다.
+
+16-2. 와!!!  ***********  [ [컴포넌트 함수 안]에  [만든 새로운 함수] 에서는, [fetch 사용할때, async await 를 사용해도 된다]!!!! ] *********
 
         
-            
+    function ContactForm() {
+        const emailRef = useRef();
+            ...
+
+-       function submitHandler(event) {
+            event.preventDefault();
+    
+-           fetch("/api/contact-api", {
+                    ...
+
+                .then((res) => {
+                if (res.ok) {
+                    return res.json();
+
+                .then(
+                (data) => (
+                    console.log(data),
+                    NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "success",
+                    status: "success",
+                    })
+                )
+                )
+                .catch((error) => {
+                console.log(error);
+                NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "success",
+                    status: "error",
+                });
+                });
+            }
+
+    ===>> "이런 긴 프로미스체인을 쓸 필요가 없고" [컴포넌트 함수] 의[안에 있는 함수] 이므로, "async, await 가 사용가능해져서"
+
+        function ContactForm() {
+            const emailRef = useRef();
+                ...
+        
+-           async function submitHandler(event) {
+                event.preventDefault();
+
+-               const response = await fetch("/api/contact-api", {
+                                ...
+
+
+-   ===>> [ async await 를 사용할 수 있따.... ] ***************************
+
+    < async await 을 사용하는 fetch 코드로 다시 변경시키면>
+
+        async function submitHandler(event) {
+            event.preventDefault();
+
+            NotificationCtx.showNotification({
+                title: "audtlr",
+                message: "pending",
+                status: "pending",
+            })
+
+            const response = await fetch("/api/contact-api", {
+                method: "POST",
+                body: JSON.stringify(insertData),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+            const data = await response.json()
+
+            if(!response.ok){
+                NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "success",
+                    status: "success",
+                })
+            }else{
+                NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "error",
+                    status: "error",
+                })
+            }
+
+    ==> "와... 진짜 깔끔해졌다."
 
             
+
+
+    
+                    
 
 

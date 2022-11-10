@@ -1,0 +1,19 @@
+.background {
+  background-color: black;
+  position: relative;
+  width: 100%;
+  padding: 3rem;
+  z-index: 20;
+}
+
+.background ul {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+}
+
+.background li {
+  border-radius: 50px;
+  padding: 1rem;
+  background-color: white;
+}
