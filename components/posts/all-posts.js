@@ -7,7 +7,7 @@ function AllPosts(props) {
 
   return (
     <Fragment>
-      <h1> All posts</h1>
+      <h1 className={styles.h1}> All posts</h1>
       <PostGrid posts={posts} />
     </Fragment>
   );

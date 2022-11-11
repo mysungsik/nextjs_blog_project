@@ -12,6 +12,7 @@ function PostItem(props) {
       <div>
         <div className={styles.image}>
           <Image
+            className={styles.imageSizing}
             src={`/src/posts/${postid}/${image}`}
             alt={"image"}
             width={300}

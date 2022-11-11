@@ -136,13 +136,18 @@
 2. 이미지 사용 ( <ReactMarkdown components={ customComponent }>   </ ReactMarkdown> ) 쓰면 굳
     ![alt](src)
 
--   [추가. 이미지 오버라이드]
+[** 추가. 이미지 오버라이드]
 
         const customComponent = {
             img(image){
                 return <Image src={...} alt={...} width={...} height={...} />
             }
         }
+
+        <ReactMarkdown components={ customComponent }>  {markdown.content} </ ReactMarkdown>
+
+            * image.alt => markdown 안에 적은 alt 가 그대로 복사됨
+            * image.src => markdown 안에 적은 src 가 그대로 복사됨
 
 3. 컨텐츠,헤더 나누기 사용 (gray-matter 쓰면 굳)
 

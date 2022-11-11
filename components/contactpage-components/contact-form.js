@@ -1,13 +1,13 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useRef, useContext } from "react";
 import NotificationContext from "../../store/contact-context";
 import styles from "./contact-form.module.css";
 import Notification from "../ui/notification";
 
 function ContactForm() {
-  const emailRef = useRef();
-  const nameRef = useRef();
-  const contentRef = useRef();
+  const [emailState, setEmailState] = useState();
+  const [nameState, setNameState] = useState();
+  const [contentState, setContentState] = useState();
 
   const NotificationCtx = useContext(NotificationContext);
   const activeNotification = NotificationCtx.notificationData;
@@ -16,9 +16,9 @@ function ContactForm() {
     event.preventDefault();
 
     const insertData = {
-      email: emailRef.current.value,
-      name: nameRef.current.value,
-      content: contentRef.current.value,
+      email: emailState,
+      name: nameState,
+      content: contentState,
     };
 
     NotificationCtx.showNotification({
@@ -35,8 +35,6 @@ function ContactForm() {
       },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
       NotificationCtx.showNotification({
         title: "audtlr",
@@ -49,6 +47,9 @@ function ContactForm() {
         message: "success",
         status: "success",
       });
+      setEmailState("");
+      setNameState("");
+      setContentState("");
     }
   }
 
@@ -67,7 +68,8 @@ function ContactForm() {
               name={"email"}
               required
               placeholder="input your email"
-              ref={emailRef}
+              value={emailState}
+              onChange={(e) => setEmailState(e.target.value)}
             />
           </div>
           <div>
@@ -78,7 +80,8 @@ function ContactForm() {
               name={"name"}
               required
               placeholder="input your name"
-              ref={nameRef}
+              value={nameState}
+              onChange={(e) => setNameState(e.target.value)}
             />
           </div>
           <div>
@@ -88,12 +91,13 @@ function ContactForm() {
               required
               placeholder="hello, what can i help"
               rows={6}
-              ref={contentRef}
+              value={contentState}
+              onChange={(e) => setContentState(e.target.value)}
             ></textarea>
           </div>
-          <div>
+          <div className={styles.buttons}>
             <button onClick={submitHandler}> submit </button>
-            <button type="reset"></button>
+            <button type="reset"> reset</button>
           </div>
         </form>
       </main>

@@ -1,0 +1,40 @@
+.category {
+  text-align: center;
+  margin: 0 auto;
+}
+.category h1 {
+  position: relative;
+  color: white;
+  width: 100%;
+  background-color: rgba(5, 4, 4, 0.518);
+  margin: 0;
+  padding: 1rem;
+}
+
+.category h2 {
+  color: white;
+  font-size: 3rem;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.category div {
+  background-color: black;
+  width: fit-content;
+  padding: 0 0 2rem 0;
+  margin: 2rem auto;
+  overflow: hidden;
+}
+
+.category img {
+  width: 30rem !important;
+  max-width: 40rem;
+  height: 30rem !important;
+  background-color: white;
+  transition: ease-in-out 0.3s;
+}
+
+.category img:hover {
+  transform: scale(1.2);
+}

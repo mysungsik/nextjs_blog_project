@@ -14,6 +14,9 @@ function Layout(props) {
               <Link href={"/"}>HomePage</Link>
             </li>
             <li>
+              <Link href={"/category"}>Category</Link>
+            </li>
+            <li>
               <Link href={"/posts"}>Allpost</Link>
             </li>
             <li>

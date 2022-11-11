@@ -12,6 +12,10 @@ function Notification() {
     NotificationCtx.hideNotification();
   }
 
+  setTimeout(() => {
+    NotificationCtx.hideNotification();
+  }, 5000);
+
   if (status === "pending") {
     statusStyle = styles.pending;
   }

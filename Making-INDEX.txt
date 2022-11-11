@@ -1024,7 +1024,298 @@ const postName = filename.replace(/\.md$/, "");
 
     ==> "와... 진짜 깔끔해졌다."
 
+17. [수정] useRef 가 아니라 , useState 를 사용하여, Form 의 INPUT 안에 값을 빼기 [ + useState 를 사용하는 장점]
+    
+    <장점>
+        useRef 는, input 안의 값을 건들 수 없고, 받아 올 수만 있으므로, 빼오긴 좋지만, input값 컨트롤이 안됌
+            반면 useState 는 컨트롤이 가능하다
+
+    <사용> : onChange 를 사용하여, 콜백함수를 넣어준다.
+        
+        const [textState, setTextState] = useState()
+
+        input type="text" value={textState} onChange={(event)= setTextState(event.target.value) }
+
+    <코드>
+        function ContactForm() {
+            const [emailState, setEmailState] = useState();
+            const [nameState, setNameState] = useState();
+            const [contentState, setContentState] = useState();
+        
+            const NotificationCtx = useContext(NotificationContext);
+            const activeNotification = NotificationCtx.notificationData;
+        
+            async function submitHandler(event) {
+                event.preventDefault();
             
+                const insertData = {
+                    email: emailState,
+                    name: nameState,
+                    content: contentState,
+                };
+                    ...
+
+                } else {
+                    NotificationCtx.showNotification({
+                    title: "audtlr",
+                    message: "success",
+                    status: "success",
+                    });
+-                   setEmailState("");                          // fetch 에 성공하면, 이렇게 input을 지울 수 있음
+-                   setNameState("");
+-                   setContentState("");
+                }
+                }
+
+          return (
+            <Fragment>
+            <header className={styles.header}>
+                <h1> CONTACT ME !</h1>
+            </header>
+            <main className={styles.main}>
+                <form>
+                <div>
+                    <label htmlFor="email"> your email</label>
+                    <input
+                    type={"email"}
+                    id={"email"}
+                    name={"email"}
+                    required
+                    placeholder="input your email"
+-                   value={emailState}                                 // value와 onChange 를 통해서, useRef 처럼 값을 받아옴
+-                   onChange={(e) => setEmailState(e.target.value)}
+
+18. [수정한것들]
+
+    1. 카테고리 페이지 만들기
+    2. 카테고리 분류해서, 따로만들었음
+    3. 이것저것 스타일링
+
+19. 배포를 위한 metadata head 추가하기
+
+    1) 전체 페이지에 추가할 MetaData => "_app.js" 에서 Head 태그로 생성 [ 대부분 viewport 생성 ]
+
+            import Head from "next/head";
+
+            function MyApp({ Component, pageProps }) {
+            return (
+                <NotificationContextProvider>
+-               <Head>
+-                   <meta name="viewport" content="width=device-width, initial-scale=1" />
+-               </Head>
+                <Layout>
+                    <Component {...pageProps} />
+                </Layout>
+                </NotificationContextProvider>
+            );
+            }
+
+            export default MyApp;
+
+    2) 각각 페이지에 대한 MetaData => "각각의 페이지마다 Head 를 만들어 생성" [title, description 이 보통]
+
+-           import Head from "next/head";
+
+            function HomePage(props) {
+                const { posts } = props;
+                return (
+                    <div>
+-                   <Head>
+-                       <title> Ms React Blog</title>
+-                       <meta name="description" content="i Post my study for react and javascript"/>
+-                   </Head>
+                    <div>
+                        <Welcome />
+                        <FeacturePosts posts={posts} />
+                    </div>
+                    </div>
+                );
+                }
+
+    3) 동적 페이지에 대한 MetaData => "동적인 값으로" MetaData 안에 값을 넣는다.
+
+            import Head from "next/head";
+
+            function PostDetailPage(props) {
+                const { postData } = props;
+                return (
+                    <div>
+-                   <Head>
+-                       <title> {postData.title}</title>
+-                       <meta name="description" content={postData.description}></meta>
+-                   </Head>
+                    <PostContent posts={postData} />
+                    </div>
+                );
+            }
+                    
+
+20. _document.js 파일 추가하여, [전체 앱을 감싸 바깥에서 컨트롤하기] + React Portal 사용준비
+
+    <  _document.js 의 기본 형태  >
+        
+            import Document, { Html, Head, Main, NextScript } from "next/document";
+
+            class MyDocument extends Document {
+
+            render() {
+                return (
+                <Html>
+                    <Head />
+                    <body>
+                        <Main />
+                        <NextScript />
+                    </body>
+                </Html>
+                );
+            }}
+
+            export default MyDocument;
+
+    => <Html lang="en"> 처럼 이것저것 바깥에서 추가 할 수 있음
+
+
+21. React Portal
+    
+    React 에서, 대부분 부모로부터, "인접한", 자식노드에게만 데이터와 컴포넌트를 전달한다.
+
+    그렇지만, 가끔, 전혀 상관없는 노드로부터 컴포넌트를 받아야 될 때가 있다.
+
+    마치 어디서든 튀어나오는 팝업 창 같은 것들이 대표적이다.
+
+    "React Portal 은 DOM 의 다른 위치에 자식을 삽입하는 것을 가능하게 만들어준다."
+
+
+    1) < _document.js 에, Portal 로 삽입할 위치를 정한다. >
+
+            import Document, { Html, Head, Main, NextScript } from "next/document";
+
+            class MyDocument extends Document {
+
+            render() {
+                return (
+                <Html>
+                    <Head />
+                    <body>
+                        <Main />
+                        <NextScript />
+-                       <div id="notification"></div>       // 이곳(Next.js의 컴포넌트가 전부 렌더링 된 다음곳)에 , 만든 Portal 을 삽입할것이다.
+                    </body>
+                </Html>
+                );
+            }}
+
+            export default MyDocument;
+
+    2) 기존에 만들어둔 "컴포넌트" 를, "Portal 로 만들어준다."
+
+        < 기본사용 >
+
+            1) Portal 생성 : ReactDOM.createPortal
+
+                import ReactDOM from "react-dom"
+
+                [기본]
+                    ReactDOM((children), 위치)
+
+                [디테일]
+                    ReactDOM((children), document.getElementById(""))
+
+                [실제사용]
+
+                    return ReactDOM.createPortal((
+                        <div>
+                            hi
+                        </div>
+                    ), document.getElementById("notification") );
+
+            2) Portal 위치 : "_document.js 에서 <body> 태그 어디든"
+
+
+
+        < 기존 >
+
+            import styles from "./notification.module.css";
+
+            function Notification() {
+                    ...
+
+
+            return (
+                <div className={styles.notification} onClick={hideNoti}>
+                    <ul className={statusStyle}>
+                        <li>{activeNotification.title}</li>
+                        <li>{activeNotification.message}</li>
+                        <li>{activeNotification.status}</li>
+                    </ul>
+                </div>
+            );
+            }
+
+            export default Notification;
+
+        < 변경 >
+            : "react-dom" 으로부터 ReactDOM 을 추출해, "return된 컴포넌트를 감싸고", "두번째 인수에, 위치를 getElementById 로 추가"한다.
+
+-           import ReactDOM from "react-dom"
+            import styles from "./notification.module.css";
+
+            function Notification() {
+                    ...
+
+
+-           return ReactDOM.createPortal((
+                <div className={styles.notification} onClick={hideNoti}>
+                    <ul className={statusStyle}>
+                        <li>{activeNotification.title}</li>
+                        <li>{activeNotification.message}</li>
+                        <li>{activeNotification.status}</li>
+                    </ul>
+                </div>
+-           ), document.getElementById("notification") );
+            }
+
+            export default Notification;
+
+
+22.  Next js의 배포 방법의 두가지 [ standard Build, Full Static Build ]
+
+    1) "standard Build"
+        : 가장 기본적인 Build 로, npm run build 할때, 그 빌드이다.
+
+        : 모든 Nextjs 의 기능(자동 validate, serverside code 등...)을 전부 활용 하여 Build 하는 방법이자,
+            가장 기본적이고, 충실한 Build 방법이다.
+
+        : getStaticProps, getServerSideProps 를 비롯한 API 등까지 전부 사용 가능하다.
+
+    2) "Full Static Build"
+        : 완벽하게, 정적인 포지션의 Build
+
+        : getStaticProps, getServerSideProps 를 비롯한 API 등의 "모든 서버측 코드가 사용 불가능하다"
+
+        :" 완벽히 정적인" "HTML, CSS, JAVASCRIPT 만을 사용해 만든 사이트만"이, 이 BUILD 방법으로, 배포가 가능하다
+
+
+23. 배포의 준비
+
+    1) 코드를 재정비
+
+        : MetaData, title, 등을 확인하고,
+            console.log 들도 지워버리고,
+            필요없는 dependencies 도 지워버린다.
+
+    2) 환경변수를 확인 ***
+
+        : 특히나, "MONGODB" 나 "API KEY, 주소들" 을, "환경변수 처리"하거나, 하드코딩 되어있는 것들을 잘 확인하여, 배포해야한다.
+
+    3) 배포하기전, 빌드된 파일을 테스트
+
+        : 빌드후 나오는 로컬서버로, 테스트를 한다.
+
+    4) 배포한다!
+
+   
+
 
 
     

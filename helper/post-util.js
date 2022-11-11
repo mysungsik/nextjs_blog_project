@@ -5,7 +5,9 @@ import matter from "gray-matter";
 const postsDirPath = path.join(process.cwd(), "data", "posts");
 
 export function getAllPostId() {
-  return fs.readdirSync(postsDirPath).map((filename) => filename.replace(/\.md$/, ""));
+  return fs
+    .readdirSync(postsDirPath)
+    .map((filename) => filename.replace(/\.md$/, ""));
 }
 
 export function getSinglePost(fileID) {
@@ -32,6 +34,12 @@ export function getAllPosts() {
   );
 
   return sortedPosts;
+}
+
+export function getSpecificType(postType) {
+  const specificType = getAllPosts().filter((post) => post.type === postType);
+
+  return specificType;
 }
 
 export function getFeaturedPost() {

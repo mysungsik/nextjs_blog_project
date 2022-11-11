@@ -16,6 +16,12 @@
 
 .image img {
   object-fit: cover;
+  height: 230px !important ;
+  transition: ease-out 0.2s;
+}
+
+.image img:hover {
+  transform: scale(1.2);
 }
 
 .content {
@@ -25,13 +31,16 @@
 .content h3 {
   margin: var(--size-2) 0;
   font-size: var(--size-6);
+  color: white;
+  text-shadow: 1.5px 1.5px 1px black;
 }
 
 .content time {
   font-style: italic;
-  color: var(--color-grey-300);
+  color: rgb(184, 184, 184);
 }
 
 .content p {
-  line-height: var(--size-6);
+  color: white;
+  text-shadow: 1px 1px 1px black;
 }

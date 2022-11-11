@@ -3,6 +3,7 @@ import PostItem from "../posts/post-item";
 
 function PostGrid(props) {
   const { posts } = props;
+
   return (
     <ul className={styles.grid}>
       {posts.map((post) => (
