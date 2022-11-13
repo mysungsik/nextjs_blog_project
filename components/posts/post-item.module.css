@@ -16,7 +16,7 @@
 
 .image img {
   object-fit: cover;
-  height: 230px !important ;
+  height: auto;
   transition: ease-out 0.2s;
 }
 

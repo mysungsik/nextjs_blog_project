@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import styles from "./post-item.module.css";
 
@@ -15,8 +15,9 @@ function PostItem(props) {
             className={styles.imageSizing}
             src={`/src/posts/${postid}/${image}`}
             alt={"image"}
-            width={300}
-            height={200}
+            width={400}
+            height={300}
+            priority
             layout="responsive"
           />
         </div>
