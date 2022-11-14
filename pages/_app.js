@@ -2,7 +2,7 @@ import "../styles/globals.css";
 import Layout from "../components/ui/layout";
 import { NotificationContextProvider } from "../store/contact-context";
 import Head from "next/head";
-import { Analytics } from "@vercel/analytics";
+import { Analytics } from "@vercel/analytics/react";
 
 function MyApp({ Component, pageProps }) {
   return (
