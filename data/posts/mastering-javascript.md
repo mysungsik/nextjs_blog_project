@@ -1,6 +1,6 @@
 ---
 title: Mastering JavaScript
-date: "2021-10-30"
+date: "2022-11-12"
 author: "ms"
 image: mastering-js-thumb.png
 description: JavaScript is the most important programming language for web development. You probably don't know it well enough!
@@ -21,5 +21,3 @@ function printBasics() {
 
 printBasics();
 ```
-
-Learn more about it [here](https://academind.com).
