@@ -5,7 +5,7 @@ author: "ms"
 image: IMG_5584.JPG
 description: description
 isFeatured: true
-type: **nextjs**
+type: nextjs
 ---
 
 NextJS is a **framework for ReactJS**.

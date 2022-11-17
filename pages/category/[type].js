@@ -23,7 +23,7 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
   return {
-    paths: [{ params: { type: "nextjs" } }],
+    paths: [{ params: { type: "react" } }],
     fallback: "blocking",
   };
 }
